@@ -17,6 +17,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
+    //ROGER é muito gostosinho
     @Test
     public void useAppContext() {
         // Context of the app under test.
