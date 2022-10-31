@@ -41,7 +41,7 @@ public class DBController {
         if(cursor!=null){
             cursor.moveToFirst();
         }
-        db.close();
+        //db.close();
         return cursor;
     }
 
@@ -57,6 +57,30 @@ public class DBController {
         }
         db.close();
         return cursor;
+    }
+
+    public void alteraPet(int id, String nome, String raca, byte[] foto){
+        ContentValues valores;
+        String where;
+
+        db = banco.getWritableDatabase();
+
+        where = SQLiteDB.ID_PET + "=" + id;
+
+        valores = new ContentValues();
+        valores.put(SQLiteDB.NOME_PET, nome);
+        valores.put(SQLiteDB.RACA_PET, raca);
+        valores.put(SQLiteDB.FOTO_PET, foto);
+
+        db.update(SQLiteDB.TABELA_PETS, valores, where,null);
+        db.close();
+    }
+
+    public void deletaPet(int id){
+        String where = SQLiteDB.ID_PET + "=" + id;
+        db = banco.getReadableDatabase();
+        db.delete(SQLiteDB.TABELA_PETS, where,null);
+        db.close();
     }
 }
 

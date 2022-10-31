@@ -2,15 +2,26 @@
     <!-- Base application theme. -->
     <style name="Theme.DionisioPet" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primaryDarkColor</item>
+
         <!-- Customize your theme here. -->
+        <item name="android:enforceStatusBarContrast">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <item name="actionBarStyle">@style/Widget.MaterialComponents.ActionBar.Primary</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+<!--        <item name="actionModeBackground">@color/design_default_color_error</item>-->
+    </style>
+    <style name="Base.ThemeOverlay.AppCompat.Dark.ActionBar"  parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 </resources>

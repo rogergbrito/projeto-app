@@ -51,13 +51,13 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="118dp"
-        android:layout_height="120dp"
+        android:layout_width="256dp"
+        android:layout_height="256dp"
         android:layout_marginStart="146dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="147dp"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_add_24" />

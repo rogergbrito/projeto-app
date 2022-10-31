@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
@@ -22,9 +23,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class PetFormActivity extends AppCompatActivity {
-    DBController db;
+    DBController db = new DBController(PetFormActivity.this);
     String nomePet;
     String racaPet;
     byte[] fotoPet;
@@ -48,9 +51,16 @@ public class PetFormActivity extends AppCompatActivity {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if(result.getResultCode() == RESULT_OK && result.getData() != null){
-                            Bundle bundle1 = result.getData().getExtras();
-                            Bitmap bitmap = (Bitmap) bundle1.get("data");
+                        Intent data = result.getData();
+                        if(data != null && result.getResultCode() == RESULT_OK && data.getData() != null){
+                            Uri selectedImageUri = data.getData();
+                            InputStream inputStream = null;
+                            try {
+                                inputStream = getContentResolver().openInputStream(selectedImageUri);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                             fotoPetView.setImageBitmap(bitmap);
                         }
                     }
@@ -59,7 +69,7 @@ public class PetFormActivity extends AppCompatActivity {
         setTitle("Adicionar Pet");
 
         Bundle bundle = getIntent().getExtras();
-        String petId;
+        String petId = null;
         if(bundle != null){
             petId = bundle.getString("id");
             setTitle(petId);
@@ -78,28 +88,34 @@ public class PetFormActivity extends AppCompatActivity {
             fotoPetView.setImageBitmap(bm);
         }
 
+        String finalPetId = petId;
         salvarButton.setOnClickListener(view -> {
+            db = new DBController(PetFormActivity.this);
+
             Bitmap bitmap = ((BitmapDrawable) fotoPetView.getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
 
             fotoPet = baos.toByteArray();
             nomePet = nomePetView.getText().toString();
             racaPet = racaPetView.getText().toString();
 
-            DBController db = new DBController(getBaseContext());
-            String result = db.inserePet(nomePet, racaPet, fotoPet);
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+            if(finalPetId != null){
+                db.alteraPet(Integer.parseInt(finalPetId), nomePet, racaPet, fotoPet);
+            }else{
+                String result = db.inserePet(nomePet, racaPet, fotoPet);
+            }
 
             finish();
         });
 
         fotoPetView.setOnClickListener(view -> {
-            Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if(camera_intent.resolveActivity(getPackageManager()) != null){
-                activityResultLauncher.launch(camera_intent);
-            }else{
+            Uri fileuri = null;
+            Intent camera_intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            if (camera_intent.resolveActivity(getPackageManager()) == null) {
                 Toast.makeText(this, "Nenhum app de camera", Toast.LENGTH_SHORT).show();
+            } else {
+                activityResultLauncher.launch(camera_intent);
             }
         });
     }
