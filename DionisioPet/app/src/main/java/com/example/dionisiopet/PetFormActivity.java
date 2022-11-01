@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -52,7 +54,7 @@ public class PetFormActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         Intent data = result.getData();
-                        if(data != null && result.getResultCode() == RESULT_OK && data.getData() != null){
+                        if(data != null && result.getResultCode() == RESULT_OK && data.getData() != null) {
                             Uri selectedImageUri = data.getData();
                             InputStream inputStream = null;
                             try {
@@ -61,7 +63,14 @@ public class PetFormActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                            fotoPetView.setImageBitmap(bitmap);
+
+                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                            if (bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out)) {
+                                Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+                                int dimension = getSquareCropDimensionForBitmap(decoded);
+                                decoded = ThumbnailUtils.extractThumbnail(decoded, dimension, dimension);
+                                fotoPetView.setImageBitmap(decoded);
+                            }
                         }
                     }
                 });
@@ -113,12 +122,17 @@ public class PetFormActivity extends AppCompatActivity {
             Uri fileuri = null;
             Intent camera_intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             if (camera_intent.resolveActivity(getPackageManager()) == null) {
-                Toast.makeText(this, "Nenhum app de camera", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Erro", Toast.LENGTH_SHORT).show();
             } else {
                 activityResultLauncher.launch(camera_intent);
             }
         });
     }
+        public int getSquareCropDimensionForBitmap(Bitmap bitmap)
+        {
+            return Math.min(bitmap.getWidth(), bitmap.getHeight());
+        }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
