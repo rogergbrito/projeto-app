@@ -2,9 +2,10 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_search"
         android:orderInCategory="100"
         android:title="Pesquisa"
         android:icon="@drawable/ic_baseline_search_24"
+        app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom" />
 </menu>

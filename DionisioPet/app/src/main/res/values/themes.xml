@@ -17,6 +17,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:actionBarStyle">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="android:windowContentTransitions">true</item>
 <!--        <item name="actionModeBackground">@color/design_default_color_error</item>-->
     </style>
     <style name="AlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
@@ -24,4 +25,12 @@
         <item name="colorAccent">#FF0000</item>
 <!--        <item name="colorPrimary">@color/primaryLightColor</item>-->
     </style>
+    <style name="Theme.DionisioPet.NoActionbar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="AppTheme"></style>
+
 </resources>

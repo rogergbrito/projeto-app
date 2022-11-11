@@ -19,6 +19,7 @@
         <item name="actionBarStyle">@style/Widget.MaterialComponents.ActionBar.Primary</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="android:windowContentTransitions">true</item>
 <!--        <item name="actionModeBackground">@color/design_default_color_error</item>-->
     </style>
     <style name="Base.ThemeOverlay.AppCompat.Dark.ActionBar"  parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
