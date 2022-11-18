@@ -6,13 +6,17 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,6 +64,7 @@ public class PetFormActivity extends AppCompatActivity implements DatePickerDial
         Button salvarButton = findViewById(R.id.button2);
         Button nascimentoButton = findViewById(R.id.buttonSelectBirth);
         TextView aniversarioTextView = findViewById(R.id.nascimentoValue);
+        aniversarioTextView.setText("");
 
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -125,7 +130,7 @@ public class PetFormActivity extends AppCompatActivity implements DatePickerDial
             nascimentoPet = aniversarioTextView.getText().toString();
 
             db = new DBController(PetFormActivity.this);
-            String fotoFileName = nomePet + new Date().getTime() + ".jpeg";
+            String fotoFileName = nomePet + ".jpeg";
 
             if(fotoPetView.getDrawable().isFilterBitmap()){
                 Bitmap bitmap = ((BitmapDrawable) fotoPetView.getDrawable()).getBitmap();
@@ -151,7 +156,6 @@ public class PetFormActivity extends AppCompatActivity implements DatePickerDial
         });
 
         fotoPetView.setOnClickListener(view -> {
-            Uri fileuri = null;
             Intent pick_foto_intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             if (pick_foto_intent.resolveActivity(getPackageManager()) == null) {
                 Toast.makeText(this, "Erro", Toast.LENGTH_SHORT).show();
@@ -175,6 +179,11 @@ public class PetFormActivity extends AppCompatActivity implements DatePickerDial
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         );
         datePickerDialog.show();
+
+        datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE)
+                .setTextColor(ResourcesCompat.getColor(getResources(), R.color.secondaryColor, null));
+        datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
+                .setTextColor(ResourcesCompat.getColor(getResources(), R.color.secondaryColor, null));
     }
 
     @Override
@@ -189,12 +198,12 @@ public class PetFormActivity extends AppCompatActivity implements DatePickerDial
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month , int dayOfMonth) {
+        int mesCerto = month +1; //Month é index zero based
         String diaHelper = String.valueOf(dayOfMonth).length() > 1 ? String.valueOf(dayOfMonth) : "0" + String.valueOf(dayOfMonth);
-        String mesHelper = String.valueOf(month).length() > 1 ? String.valueOf(month + 1) : "0" + String.valueOf(month + 1);
+        String mesHelper = String.valueOf(mesCerto).length() > 1 ? String.valueOf(mesCerto) : "0" + String.valueOf(mesCerto);
         String dateText = diaHelper + "/" + mesHelper + "/" + year;
         TextView aniversarioTextView = findViewById(R.id.nascimentoValue);
         aniversarioTextView.setText(dateText);
-
         nascimentoPet = dateText;
     }
 }

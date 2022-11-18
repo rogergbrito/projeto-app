@@ -10,6 +10,7 @@ import androidx.core.splashscreen.SplashScreen;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.os.Bundle;
 import android.transition.Fade;
 import android.view.Menu;
@@ -203,6 +204,7 @@ int selectedpetPosition;
                     petDb = new DBController(getBaseContext());
                     Cursor petCursor = petDb.carregaPetById(selectedpetPosition);
                     String nomePetSelecionado = petCursor.getString(petCursor.getColumnIndexOrThrow(SQLiteDB.NOME_PET));
+                    String fotoPetPath = petCursor.getString(petCursor.getColumnIndexOrThrow(SQLiteDB.FOTO_PET));
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
                     builder.setTitle("Excluir");
@@ -210,6 +212,7 @@ int selectedpetPosition;
                     builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             petDb.deletaPet(selectedpetPosition);
+                            ImageHelper.deleteFile(getApplicationContext(), fotoPetPath);
                             refreshList();
                         }
                     });

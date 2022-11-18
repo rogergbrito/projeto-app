@@ -1,12 +1,14 @@
 package com.example.dionisiopet.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.transition.Transition;
@@ -28,6 +30,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
+
+import kotlin.io.ConsoleKt;
 
 public class  FullPetDetailsActivity extends AppCompatActivity implements NewVacinaDialog.NewVacinaDialogListener {
     DBController db = new DBController(FullPetDetailsActivity.this);
@@ -37,6 +42,7 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
     SimpleCursorAdapter adapter;
     Cursor cursor;
     Integer petIdNumber = 0;
+    Integer filter = 0; //ID PARA QUERY - 0 data, 1 nome
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +80,7 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
         fixAnimation();
         setupFabScroll();
 
-        cursor = db.getVacinasFromPet(petIdNumber);
+        cursor = db.getVacinasFromPet(petIdNumber, filter);
         adapter = new SimpleCursorAdapter(
                 this,
                 R.layout.vacina_item,
@@ -115,6 +121,20 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
             case R.id.addVacina:
                 openNewVacinaDialog();
                 return true;
+
+            case R.id.sort:
+                AlertDialog.Builder builder = new AlertDialog.Builder(FullPetDetailsActivity.this, R.style.AlertDialogTheme);
+                builder.setTitle("Ordenar por: ");
+                builder.setSingleChoiceItems(new String[]{"Data", "Nome"}, filter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        filter = i;
+                        dialogInterface.cancel();
+                        refreshList();
+                    }
+                });
+                builder.show();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -132,6 +152,7 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
 
     private void setupFabScroll() {
         AppBarLayout mAppBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton2);
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -149,6 +170,7 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
                     isShow = false;
                     MenuItem item = menu.findItem(R.id.addVacina);
                     item.setVisible(false);
+                    fab.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -159,7 +181,6 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
         FloatingActionButton fab = findViewById(R.id.floatingActionButton2);
 
         fab.setVisibility(View.INVISIBLE);
-        toolbar.setVisibility(View.INVISIBLE);
 
         getWindow().getSharedElementEnterTransition().addListener(new Transition.TransitionListener() {
             @Override
@@ -167,7 +188,7 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
                 Animator anim   = ObjectAnimator.ofFloat(null, "alpha", 0f, 1f);
                 anim.setInterpolator(new DecelerateInterpolator());
                 fab.setVisibility(View.VISIBLE);
-                toolbar.setVisibility(View.VISIBLE);
+                //toolbar.setVisibility(View.VISIBLE);
 
                 anim.start();
             }
@@ -193,7 +214,7 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
 
     private void refreshList(){
         db = new DBController(getBaseContext());
-        cursor = db.getVacinasFromPet(petIdNumber);
+        cursor = db.getVacinasFromPet(petIdNumber, filter);
         adapter.swapCursor(cursor);
         adapter.notifyDataSetChanged();
     }

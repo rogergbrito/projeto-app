@@ -85,7 +85,8 @@ public class DBController {
 
         db = banco.getReadableDatabase();
         String where2 = SQLiteDB.ID_PET_VACINA + "=" + id;
-        db.delete(SQLiteDB.TABELA_VACINAS, where, null);
+        db.delete(SQLiteDB.TABELA_VACINAS, where2, null);
+
 
         db.close();
     }
@@ -123,12 +124,26 @@ public class DBController {
             return "Registro inserido com sucesso";
     }
 
-    public Cursor getVacinasFromPet(int petId){
+    public Cursor getVacinasFromPet(int petId, int filter){
         Cursor cursor;
-        String[] campos =  {SQLiteDB.ID_VACINA, SQLiteDB.ID_PET_VACINA, SQLiteDB.NOME_VACINA, SQLiteDB.DATA_VACINA};
-        String where = SQLiteDB.ID_PET_VACINA + "=" + petId;
+        String sql = "";
+        switch (filter){
+            case 0: //Data
+                sql = "select *, substr(data, 7,4)as yy, substr(data,4,2) as mm, substr(data,1,2) as dd from "
+                        + SQLiteDB.TABELA_VACINAS + " WHERE " + SQLiteDB.ID_PET_VACINA + "=" + petId
+                        + " ORDER BY yy DESC, mm DESC, dd DESC";
+                break;
+            case 1: //Nome
+                sql = "select * FROM " + SQLiteDB.TABELA_VACINAS + " WHERE " + SQLiteDB.ID_PET_VACINA
+                        + "=" + petId + " ORDER BY " + SQLiteDB.NOME_VACINA;
+                break;
+        }
+
+        //String[] campos =  {SQLiteDB.ID_VACINA, SQLiteDB.ID_PET_VACINA, SQLiteDB.NOME_VACINA, SQLiteDB.DATA_VACINA};
+        //String where = SQLiteDB.ID_PET_VACINA + "=" + petId;
         db = banco.getReadableDatabase();
-        cursor = db.query(SQLiteDB.TABELA_VACINAS, campos, where,null,null,null,null,null);
+        //cursor = db.query(SQLiteDB.TABELA_VACINAS, campos, where,null,null,null,null,null);
+        cursor = db.rawQuery(sql, null);
 
         if(cursor!=null){
             cursor.moveToFirst();
