@@ -223,11 +223,11 @@ public class  FullPetDetailsActivity extends AppCompatActivity implements NewVac
     public void applyText(String nomeVacina, String dataVacina) {
         if(dataVacina == null || dataVacina == ""){
             int year = Calendar.getInstance().get(Calendar.YEAR);
-            int month = Calendar.getInstance().get(Calendar.MONTH);
+            int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
             int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
             String diaHelper = String.valueOf(dayOfMonth).length() > 1 ? String.valueOf(dayOfMonth) : "0" + String.valueOf(dayOfMonth);
-            String mesHelper = String.valueOf(month).length() > 1 ? String.valueOf(month + 1) : "0" + String.valueOf(month + 1);
+            String mesHelper = String.valueOf(month).length() > 1 ? String.valueOf(month) : "0" + String.valueOf(month);
             String dateText = diaHelper + "/" + mesHelper + "/" + year;
 
             dataVacina = dateText;

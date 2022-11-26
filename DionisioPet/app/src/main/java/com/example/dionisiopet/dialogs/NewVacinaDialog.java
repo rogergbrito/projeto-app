@@ -55,8 +55,9 @@ public class NewVacinaDialog extends AppCompatDialogFragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int dayOfMonth) {
                 //aqui month é 0-11, por isso do +1. OBRIGADO GOOGLE
+                int mesCerto = month + 1;
                 String diaHelper = String.valueOf(dayOfMonth).length() > 1 ? String.valueOf(dayOfMonth) : "0" + String.valueOf(dayOfMonth);
-                String mesHelper = String.valueOf(month).length() > 1 ? String.valueOf(month + 1) : "0" + String.valueOf(month + 1);
+                String mesHelper = String.valueOf(mesCerto).length() > 1 ? String.valueOf(mesCerto) : "0" + String.valueOf(mesCerto);
                 String dateText = diaHelper + "/" + mesHelper + "/" + year;
 
                 _dataVacina = dateText;
